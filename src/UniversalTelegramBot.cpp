@@ -450,7 +450,15 @@ bool UniversalTelegramBot::processResult(JsonObject result, int messageIndex) {
     messages[messageIndex].reply_to_text = F("");
     messages[messageIndex].query_id = F("");
 
-    if (result.containsKey("message")) {
+    if (result.containsKey("inline_query")) {
+      JsonObject message = result["inline_query"];
+      messages[messageIndex].type = F("inline_query");
+      messages[messageIndex].from_id = message["from"]["id"].as<String>();
+      messages[messageIndex].from_name = message["from"]["first_name"].as<String>();
+      messages[messageIndex].text = message["query"].as<String>();
+      messages[messageIndex].chat_id = message["id"].as<String>();
+      messages[messageIndex].query_id = message["id"].as<String>();
+    } else if (result.containsKey("message")) {
       JsonObject message = result["message"];
       messages[messageIndex].type = F("message");
       messages[messageIndex].from_id = message["from"]["id"].as<String>();
@@ -811,6 +819,23 @@ bool UniversalTelegramBot::answerCallbackQuery(const String &query_id, const Str
   String response = sendPostToTelegram(BOT_CMD("answerCallbackQuery"), payload.as<JsonObject>());
   #ifdef _debug  
      Serial.print(F("answerCallbackQuery response:"));
+     Serial.println(response);
+  #endif
+  bool answer = checkForOkResponse(response);
+  closeClient();
+  return answer;
+}
+
+bool UniversalTelegramBot::answerInlineQuery(const String &query_id, const String &results)
+{
+  DynamicJsonDocument payload(maxMessageLength);
+
+  payload["inline_query_id"] = query_id;
+  payload["results"] = serialized(results);
+
+  String response = sendPostToTelegram(BOT_CMD("answerInlineQuery"), payload.as<JsonObject>());
+  #ifdef _debug  
+     Serial.print(F("answerInlineQuery response:"));
      Serial.println(response);
   #endif
   bool answer = checkForOkResponse(response);
