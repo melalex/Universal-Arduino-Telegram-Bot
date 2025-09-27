@@ -108,6 +108,8 @@ public:
                    bool disable_notification = false,
                    int reply_to_message_id = 0, const String &keyboard = "");
 
+  bool editMessageText(const String &inline_message_id, const String &text, const String &reply_markup);
+
   bool answerCallbackQuery(const String &query_id,
                            const String &text = "",
                            bool show_alert = false,

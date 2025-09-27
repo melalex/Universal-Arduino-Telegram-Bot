@@ -951,3 +951,20 @@ bool UniversalTelegramBot::answerInlineQuery(const String &query_id, const Strin
   closeClient();
   return answer;
 }
+
+bool UniversalTelegramBot::editMessageText(const String &inline_message_id, const String &text, const String &reply_markup)
+{
+  DynamicJsonDocument payload(maxMessageLength);
+  payload["inline_message_id"] = inline_message_id;
+  payload["text"] = text;
+  payload["reply_markup"] = serialized(reply_markup);
+
+  String response = sendPostToTelegram(BOT_CMD("editMessageText"), payload.as<JsonObject>());
+#ifdef _debug
+  Serial.print(F("editMessageText response:"));
+  Serial.println(response);
+#endif
+  bool answer = checkForOkResponse(response);
+  closeClient();
+  return answer;
+}
