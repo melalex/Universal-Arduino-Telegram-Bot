@@ -114,7 +114,7 @@ public:
                            const String &url = "",
                            int cache_time = 0);
 
-  bool answerInlineQuery(const String &query_id, const String &results);
+  bool answerInlineQuery(const String &query_id, const String &results, unsigned int cache_time, bool is_personal);
 
   bool setMyCommands(const String &commandArray);
 
