@@ -64,6 +64,7 @@ struct telegramMessage
   int reply_to_message_id;
   String reply_to_text;
   String query_id;
+  String inline_message_id;
 };
 
 class UniversalTelegramBot
